@@ -1,14 +1,14 @@
 {
-  "name": "safeai-backend",
+  "name": "safeai",
   "version": "1.0.0",
   "description": "An AI UI made for security",
-  "homepage": "https://github.com/ARLBR10/safeai-backend#readme",
+  "homepage": "https://github.com/ARLBR10/safeai#readme",
   "bugs": {
-    "url": "https://github.com/ARLBR10/safeai-backend/issues"
+    "url": "https://github.com/ARLBR10/safeai/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ARLBR10/safeai-backend.git"
+    "url": "git+https://github.com/ARLBR10/safeai.git"
   },
   "license": "ISC",
   "author": "arlbr10",
