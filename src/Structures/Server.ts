@@ -6,7 +6,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { ServerConfigSchema } from "./Config";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 // Interfaces/Types
 
@@ -42,28 +42,34 @@ export default class WebServer {
 
   /**
    * Check files at a Path and create a class of every one of them
-   * 
+   *
    * @param Path - Path for the modules folder
    *
    * @returns none
    */
   async LoadModules(Path: string) {
     // Read Files
-    fs.readdirSync(Path).forEach(async (file: string) => {
+    const files = fs.readdirSync(Path);
+    for (const file of files) {
       try {
         const ModuleFile = await import(
-          "../modules/root"
-        ); /* (await import(path.join(Path, file))) as APIModule; */
-        const ModuleClass = ModuleFile.default || ModuleFile;
-        const Module = new ModuleClass(this);
-
-        this.App.use(
-          `/${Module.Path || file}`,
-          Module.CreateRouter(Module.Routes)
+          path.join(process.cwd(), `${Path}/${file}`)
         );
+        const ModuleClass = ModuleFile.default as typeof APIModule;
+
+        let Module = new ModuleClass(this);
+
+        if (Module.Path == '/') {
+          this.App.use(await Module.CreateRouter(await Module.RegisterRoutes()));
+        } else {
+          this.App.use(
+            `/${Module.Path || file}`,
+            Module.CreateRouter(Module.RegisterRoutes())
+          );
+        }
       } catch (err) {
         console.error(`Failed to load module ${file}:`, err);
       }
-    });
+    }
   }
 }
