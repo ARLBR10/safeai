@@ -15,11 +15,17 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate": "npx prisma generate",
+    "deploy": "npx prisma migrate deploy",
+    "dev": "npm run generate && nodemon --watch \"src/**\" --exec \"ts-node src/index.ts\"",
+    "build": "npm run generate",
+    "start": "npm run build && node build/index.js"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "consola": "^3.4.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0"
   },
   "devDependencies": {
