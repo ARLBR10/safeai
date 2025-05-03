@@ -29,7 +29,7 @@ export default class extends APIModule {
   RegisterRoutes(): APIModule_Routes[] {
     this.Routes = [
       {
-        Route: "/status",
+        Path: "/status",
         Method: "GET",
         Callback: (req: Express.Request, res: Express.Response) => {
           res.json({ message: "All system working fine!" });
