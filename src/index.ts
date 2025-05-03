@@ -1,6 +1,8 @@
+// Imports/Libs
 import WebServer from "./Structures/Server";
 import Config from "./config/Config";
 import { ServerConfigSchema } from "./Structures/Config";
+import Logger from './Tools/logger'
 require("dotenv").config();
 
 const ENVIRONMENT = process.env.ENVIRONMENT as keyof typeof Config;
@@ -11,11 +13,20 @@ if (!ENVIRONMENT || !(ENVIRONMENT in Config)) {
 
 const Server = new WebServer(Config[ENVIRONMENT] as ServerConfigSchema);
 
-Server.LoadModules(Server.Config.WebServer.Modules.Path)
+(async () => {
+  // Webserver loading
+  Server.LoadModules(Server.Config.WebServer.Modules.Path)
+  await Server.ConnectToPrisma()
 
-Server.App.listen(
-  Server.Config.WebServer.Port,
-  () => {
-    console.log(`server running on port ${Server.Config.WebServer.Port}`)
-  }
-);
+  // Start port of ExpressJS
+  Server.App.listen(
+    Server.Config.WebServer.Port,
+    () => {
+      Logger(
+        "ready",
+        `Started Webserver at port '${Server.Config.WebServer.Port}'`
+      );
+    }
+  );
+})();
+

@@ -8,6 +8,9 @@ import { ServerConfigSchema } from "./Config";
 
 const prisma = new PrismaClient();
 
+import Logger from "../Tools/logger";
+import { info } from "console";
+
 // Interfaces/Types
 
 // Main Class
@@ -18,7 +21,6 @@ export default class WebServer {
   constructor(Config: ServerConfigSchema) {
     this.Config = Config;
     this.Init();
-    this.ConnectToPrisma();
   }
 
   /**
@@ -29,6 +31,8 @@ export default class WebServer {
   Init() {
     this.App = Express();
     this.App.use(Express.json());
+
+    Logger("box", "Staring SafeAI Backend. Powered by ExpressJS")
   }
 
   /**
@@ -38,6 +42,7 @@ export default class WebServer {
    */
   async ConnectToPrisma() {
     await prisma.$connect();
+    Logger("start", "Prisma connected to database.");
   }
 
   /**
@@ -63,12 +68,16 @@ export default class WebServer {
           this.App.use(await Module.CreateRouter(await Module.RegisterRoutes()));
         } else {
           this.App.use(
-            `/${Module.Path || file}`,
+            `/${Module.Path}`,
             Module.CreateRouter(Module.RegisterRoutes())
           );
         }
+        Logger("success", `Loaded Module '${Module.About?.Description}' at ${`${Path}/${file}`}.`);
       } catch (err) {
-        console.error(`Failed to load module ${file}:`, err);
+        Logger("warn", `Module non-existent at ${`${Path}/${file}`}.`);
+        Logger(
+          "error", err
+        );
       }
     }
   }
