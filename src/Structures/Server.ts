@@ -4,22 +4,19 @@ import { PrismaClient } from "@prisma/client";
 import APIModule from "./Modules";
 import * as fs from "fs";
 import * as path from "path";
+import { ServerConfigSchema } from "./Config";
 
 const prisma = new PrismaClient()
 
 // Interfaces/Types
 
-interface WebServer_Config {
-  Port: number;
-}
-
 // Main Class
 export default class WebServer {
-  Port: number;
   App!: Express.Application;
+  Config: ServerConfigSchema;
 
-  constructor(Config: WebServer_Config) {
-    this.Port = Config.Port;
+  constructor(Config: ServerConfigSchema) {
+    this.Config = Config;
     this.Init();
     this.ConnectToPrisma();
   }
